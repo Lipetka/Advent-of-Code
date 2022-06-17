@@ -10,6 +10,7 @@ checkValues(char str[]);
 
 // variables
 
+char input_array[1005][15]; // variable that holds input for part 2
 int output_array[12]; // variable that stores output array counter
 int output_array_epsilon[12]; // variable that stores output array counter
 int gamma_dec; // variable for holding gamma rate in decimal form
@@ -20,6 +21,8 @@ int epsilon_dec; // variable for holding epsilon rate in decimal form
 int main() {
 
 	printf("\n \n ---------------Problem 3------------------ \n \n");
+
+	// PART 1
 
 	char str[15]; // variable that stores the string from input file
 	int array_counter = 0; // variable that stores array counter value
@@ -105,6 +108,51 @@ int main() {
 	printf("\nThe gamma rate in decimal is: %d \n", gamma_dec);
 	printf("The epsilon rate in decimal is: %d\n", epsilon_dec);
 	printf("The answer to AoC puzzle is: %d", gamma_dec*epsilon_dec);
+
+	/* for the second part I will have to cycle through the data again and save it in array, I will not rewrite part 1*/
+
+	// PART 2
+
+	FILE* raw_data2; // creating FILE variable
+	raw_data2 = fopen("input.txt", "r"); // open file
+
+	// if file couldn't be opened print error
+	if (raw_data2 == NULL) {
+		perror("File couldn't be opened"); // print error
+		return(0); // return from main() function
+	}
+
+	// while there is some lines to be read
+	int input_counter = 0;
+	while (fgets(str, 15, raw_data2)) {
+		/*
+		In this problem I can count every row separately and save their values in global variables
+		*/
+
+		strcpy(input_array[input_counter], str); // save string in array of strings
+		input_counter++;
+	}
+	fclose(raw_data2); // close file to save memory
+
+	// I know the most common number from PART 1 and this information is saved in variable output_array
+
+	char filterBuffer[1005][15];
+	int j = 0;
+	for (int i = 0; i <= 1000; i++) {
+		if (input_array[i][0] == output_array[0]) {
+			strcpy(filterBuffer[j], input_array[i]);
+			j++;
+		}
+	}
+
+
+	for (int i = 0; i <= length(filterBuffer); i++) {
+		if (input_array[i][1] == output_array[1]) {
+			strcpy(filterBuffer[j], input_array[i]);
+			j++;
+		}
+	}
+	
 
 	printf("\n \n ------------------------------------------- \n \n");
 }
