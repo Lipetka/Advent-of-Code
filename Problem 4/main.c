@@ -11,17 +11,17 @@ int calculatePoints();
 
 // variables
 
-int boardsArray[100][5][5] = {0};
-char bingoNumbersString[500];
-int bingoNumbers[100];
+int boardsArray[100][5][5] = {0}; // all arrays
+char bingoNumbersString[500]; // bingo numbers as a string
+int bingoNumbers[100]; // bingo numbers as a int
 bool winner = false; // winner boolean
-int round = 0;
-int winningBoard;
-int winningSum;
-int lastBoard;
-bool lastWinner = false;
-int winningArray[25] = {0};
-int winners = 0;
+int round = 0; // number of rounds
+int winningBoard; // winning board placeholder
+int winningSum; // the sum of board
+int lastBoard; // last board won placeholder
+bool lastWinner = false; // boolean of last winner
+int winningArray[25] = {0}; // array of boards that already won
+int winners = 0; // number of winners
 
 // main code
 int main() {
@@ -47,28 +47,28 @@ int main() {
 	
 	// split string and save the output as int array
 
-	char *buf;
-	int i = 0;
-	buf = strtok(bingoNumbersString, ",");
+	char *buf; // buffer
+	int i = 0; 
+	buf = strtok(bingoNumbersString, ","); // split string by comma
 	while (buf != NULL) {
-		bingoNumbers[i] = atoi(buf);
-		buf = strtok(NULL, ",");
+		bingoNumbers[i] = atoi(buf); // save split string into array of ints
+		buf = strtok(NULL, ","); // clear
 		i++;
 	}
 
 	// now I save bingotables into separate arrays
 
 
-	int blockCounter = 0;
+	int blockCounter = 0; // block = bingo board
 
 	// put input into array of arrays representing all boards
 	
 	while (fgets(str, 250, raw_data)) {
 		for (int lineCounter = 0; lineCounter < 5; lineCounter++) {
-			fgets(str, 250, raw_data);
+			fgets(str, 250, raw_data); // get line
 			line = str;
 			for (int colCounter = 0; colCounter < 5; colCounter++) {
-				boardsArray[blockCounter][lineCounter][colCounter] = strtol(line, &line, 10);
+				boardsArray[blockCounter][lineCounter][colCounter] = strtol(line, &line, 10); // save bpard as int into array of boards
 			}
 		}
 		blockCounter++;
@@ -82,31 +82,22 @@ int main() {
 	// check if there is a winner
 
 	while (winner == false) {
-		playRound();
-		checkWinner();
-		round++;
+		playRound(); // plays round
+		checkWinner(); // chcecks if there is a winner
+		round++; // add round counter
+		
 		// protection agains no winner situation
-
 		if (round == 100) {
 			printf("There is no winnner");
 			break;
 		}
 	}
 	
-	printf("All boards:\n");
-
-	for (int br = 0; br < 25; br++) {
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
-				printf("%d ", boardsArray[br][i][j]);
-			}
-			printf("\n");
-		}
-		printf("\n");
-	}
 	// calculate points of winning board
 	winningSum = calculatePoints(winningBoard);
 
+
+	// output
 	printf("\n\nWinning board is: %d\n", winningBoard);
 	printf("Sum is: %d\n", winningSum);
 	printf("Game was won on round %d\n", round);
@@ -115,16 +106,20 @@ int main() {
 
 	printf("\n \n ---------------Problem 4.2----------------- \n \n");
 
+	// I couldnt get part two to work if I will have time I will come back to this
+
 	while (lastWinner == false) {
+		// play rounds as before
 		playRound();
 		checkWinner();
 		round++;
 		// protection agains no winner situation
-
-		for (int i = 0; i < 25; i++) {
-			printf("%d ", winningArray[i]);
+		if (round == 100) {
+			printf("There is no winnner");
+			break;
 		}
-		printf("\n");
+
+		// if there are 24/25 winners stop the loop and calculate points with the last board
 
 		if (winners == 24) {
 			break;
@@ -132,14 +127,7 @@ int main() {
 
 	}
 
-
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			printf("%d ", boardsArray[winners][i][j]);
-		}
-		printf("\n");
-	}
-
+	// output
 
 	printf("\n\nTotal number of winners is: %d", winners);
 	printf("\nThe last winner is: %d", winningArray[winners - 1]);
@@ -177,7 +165,7 @@ void checkWinner() {
 	int i = 0;
 
 	for (i = 0; i < 25; i++) {
-
+		// if the board (i) is already a winning board, skip it (so it doesnt count multiple winners)
 		here:
 		for (int o = 0; o < 25; o++) {
 			if (winningArray[o] == i) {
@@ -190,6 +178,7 @@ void checkWinner() {
 			winner = true;
 			for (int k = 0; k < 5; k++) {
 				if (boardsArray[i][j][k] != 100) {
+					// check if there is a continuos 100 flag, if not, set winner as false and continue
 					winner = false;
 					break;
 				}
@@ -197,6 +186,7 @@ void checkWinner() {
 			}
 		}
 		if (winner == true) {
+			// if there is a winner, save the wining board, add winner count and return
 			winningBoard = i;
 			winningArray[winners] = winningBoard;
 			winners++;
@@ -209,12 +199,14 @@ void checkWinner() {
 			winner = true;
 			for (int k = 0; k < 5; k++) {
 				if (boardsArray[i][k][j] != 100) {
+					// the same as before but with rows
 					winner = false;
 					break;
 				}
 			}
 		}
 		if (winner == true) {
+			// the same as before
 			winningBoard = i;
 			winningArray[winners] = winningBoard;
 			winners++;
